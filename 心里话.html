@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浪漫爱心表白</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  width:100vw;
+  height:100vh;
+  background:#ffffff;
+  overflow:hidden;
+  cursor:pointer;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+
+/* 爱心容器 */
+.love-box{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  animation:popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  z-index:10;
+}
+
+/* ⭐ 新增：消失动画类 */
+.love-box.fade-out{
+  animation:fadeOut 0.6s ease forwards;
+}
+
+/* 爱心形状 */
+.love{
+  width:100%;
+  height:100%;
+  clip-path: path('M50 20C65 0, 100 0, 100 40C100 80, 50 100, 50 100C50 100, 0 80, 0 40C0 0, 35 0, 50 20Z');
+  position:relative;
+}
+
+.love-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-60%, -70%);
+  width:70%;
+  color:#fff;
+  font-weight:500;
+  text-align:center;
+  line-height:1.3;
+  font-size:13px;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.final-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(0.5);
+  font-size:42px;
+  color:#ff4d88;
+  font-weight:bold;
+  opacity:0;
+  transition:all 0.8s ease;
+  z-index:20;
+}
+
+.final-text.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+}
+
+/* ⭐ 弹出动画 */
+@keyframes popIn{
+  0%{
+    transform:scale(0);
+    opacity:0;
+  }
+  100%{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+/* ⭐ 新增：消失动画（淡出 + 缩小 + 轻微上浮） */
+@keyframes fadeOut{
+  0%{
+    transform:scale(1);
+    opacity:1;
+  }
+  100%{
+    transform:scale(0.5) translateY(-30px);
+    opacity:0;
+  }
+}
+
+/* 提示文字 */
+.tip-text{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:24px;
+  color:#ff6b9d;
+  font-weight:bold;
+  opacity:1;
+  transition:opacity 0.5s ease;
+  z-index:5;
+}
+
+.tip-text.hide{
+  opacity:0;
+}
+</style>
+</head>
+
+<body onclick="startLove()">
+
+<div class="tip-text" id="tip">点击屏幕，查收惊喜</div>
+<div class="final-text" id="final">我真的很爱你❤️</div>
+
+<script>
+
+const txtList = [
+"我喜欢你","记得好好吃饭","我好想见你","每天都想你","你笑起来真好看",
+"往后余生都是你","我会一直陪着你","余生请多指教","爱你不止三千遍",
+"陪你过每一天","你是我的心底温柔","要一直开心呀","我喜欢和你在一起",
+"想和你岁岁年年","我真的超级爱你","想和你吃很多饭","想和你去很多地方",
+"你永远都是最好的","谢谢你来到我身边","我会永远爱你",
+"好好吃饭好好生活","你是我的一束光","有你每天都很幸福",
+"你是我的唯一","和你在一起很甜","你是我最珍惜的人",
+"希望一直走下去","我会一直对你好","你是漫天星光",
+"我好爱你","慢慢相爱慢慢生活","我一直都在",
+"想和你有长久未来","你是我的全世界","春夏秋冬都想陪你",
+"满眼都是你","温柔只给你","三餐四季与你","满心欢喜都是你",
+"遇见你的时候刚刚好"
+];
+
+const colors = [
+"#ff8fab","#ff5e88","#dc8add","#a880ff",
+"#7a93ff","#64b3ff","#ff9e80","#ff77a9"
+];
+
+let isRun = false;
+const tipEl = document.getElementById('tip');
+const finalEl = document.getElementById('final');
+
+function startLove(){
+  if(isRun) return;
+  isRun = true;
+  let count = txtList.length;
+
+  tipEl.classList.add('hide');
+
+  txtList.forEach((word,i)=>{
+
+    setTimeout(()=>{
+
+      let div = document.createElement('div');
+      div.className='love-box';
+
+      let size = 120;
+      div.style.width = size + 'px';
+      div.style.height = size + 'px';
+
+      div.style.left = Math.random() * 80 + 'vw';
+      div.style.top = Math.random() * 80 + 'vh';
+
+      let randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+      div.innerHTML = `
+        <div class="love" style="background:${randomColor}">
+          <div class="love-text">${word}</div>
+        </div>
+      `;
+
+      document.body.appendChild(div);
+
+      setTimeout(()=>{
+        
+        /* ⭐ 新增：先添加消失动画类 */
+        div.classList.add('fade-out');
+        
+        /* ⭐ 新增：等动画播放完(600ms)再移除元素 */
+        setTimeout(()=>{
+          div.remove();
+          count--;
+
+          if(count === 0){
+            finalEl.classList.add('show');
+            
+            setTimeout(()=>{
+              finalEl.classList.remove('show');
+            },3000);
+
+            setTimeout(()=>{
+              isRun = false;
+              tipEl.classList.remove('hide');
+            },3500);
+          }
+        },600); // 与CSS动画时长一致
+        
+      },8500); // 显示8秒后开始消失
+
+    }, i * 400); // 每600ms弹出一个
+
+  });
+}
+
+</script>
+
+</body>
+</html>
